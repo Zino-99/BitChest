@@ -1,0 +1,22 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    # Uncomment below when on Mac M1
+    # platform: linux/arm64/v8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: mysql
+    depends_on:
+      - mysql
