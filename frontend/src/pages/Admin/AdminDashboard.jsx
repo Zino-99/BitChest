@@ -1,8 +1,8 @@
 import React from 'react'
-import Navbar from '../../components/user/navbar'
+import Navbar from '../../components/admin/Navbar'
 import BitchestLogo from '../../assets/bitchest_logo.png'
 import { Link } from 'react-router-dom'
-const Market = () => {
+const AdminDashboard = () => {
     return (
         <div className="grid grid-cols-[250px_1fr] min-h-screen">
             {/* SIDEBAR */}
@@ -17,9 +17,9 @@ const Market = () => {
             </aside>
 
             {/* CONTENT */}
-            <main className="p-6  bg-white">Market Overview</main>
+            <main className="p-6  bg-white">Admin Dashboard Overview</main>
         </div>
     )
 }
 
-export default Market
+export default AdminDashboard

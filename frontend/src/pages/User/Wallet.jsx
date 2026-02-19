@@ -1,11 +1,25 @@
-import React from 'react';
-
+import React from 'react'
+import Navbar from '../../components/user/navbar'
+import BitchestLogo from '../../assets/bitchest_logo.png'
+import { Link } from 'react-router-dom'
 const Wallet = () => {
     return (
-        <div>
-            <h1>wallet</h1>
-        </div>
-    );
-};
+        <div className="grid grid-cols-[250px_1fr] min-h-screen">
+            {/* SIDEBAR */}
+            <aside className="bg-white text-zinc-700 p-4 grid grid-rows-[150px_1fr_100px] border-r border-[#EAEAEA]">
+                <img src={BitchestLogo} alt="bitchest_logo" />
+                <Navbar />
+                <Link to="/">
+                    <button className="py-2.5 text-start cursor-pointer px-8 w-full hover:bg-red-200 hover:text-red-800  text-sm rounded-[10px]">
+                        Logout
+                    </button>
+                </Link>
+            </aside>
 
-export default Wallet;
+            {/* CONTENT */}
+            <main className="p-6  bg-white">Wallet Overview</main>
+        </div>
+    )
+}
+
+export default Wallet
