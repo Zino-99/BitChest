@@ -1,72 +1,63 @@
-import React from 'react'
+export default function Register() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#43698f]">
+      <div className="bg-gray-100 w-[420px] rounded-3xl shadow-xl p-8">
+        
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-center text-blue-500 mb-2">
+          BitChest
+        </h1>
+        <p className="text-center text-gray-600 mb-8">
+          Sign up for BitChest
+        </p>
 
-const Register = () => {
-    return (
-        <div className="bg-sky-800 h-screen flex items-center justify-center">
-            <div className="bg-white p-8 w-105 rounded-lg">
-                <h1 className="text-6xl font-bold text-[#35A7FF] text-center mb-4">
-                    BitChest
-                </h1>
-                <p class="text-center text-lg mb-8 text-heading">
-                    Sign Up for BitChest
-                </p>
-                <form class="max-w-sm mx-auto">
-                    <div class="mb-5">
-                        <label
-                            for="email"
-                            class="block mb-2.5 text-sm font-medium text-heading"
-                        >
-                            Your email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-                            placeholder="name@flowbite.com"
-                            required
-                        />
-                    </div>
-                    <div class="mb-5">
-                        <label
-                            for="password"
-                            class="block mb-2.5 text-sm font-medium text-heading"
-                        >
-                            Your password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-                            placeholder="••••••••"
-                            required
-                        />
-                    </div>
-                    <label for="remember" class="flex items-center mb-5">
-                        <input
-                            id="remember"
-                            type="checkbox"
-                            value=""
-                            class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
-                            required
-                        />
-                        <p class="ms-2 text-sm font-medium text-heading select-none">
-                            I agree with the{' '}
-                            <a href="#" class="text-fg-brand hover:underline">
-                                terms and conditions
-                            </a>
-                            .
-                        </p>
-                    </label>
-                    <button
-                        type="submit"
-                        class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-                    >
-                        Submit
-                    </button>
-                </form>
-            </div>
+        {/* Name row */}
+        <div className="flex gap-4 mb-4">
+          <div className="flex flex-col w-1/2">
+            <label className="mb-1 text-gray-700">First Name</label>
+            <input
+              type="text"
+              placeholder="Sophie"
+              className="rounded-full px-4 py-3 bg-gray-200 outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <div className="flex flex-col w-1/2">
+            <label className="mb-1 text-gray-700">Last Name</label>
+            <input
+              type="text"
+              placeholder="Sophie"
+              className="rounded-full px-4 py-3 bg-gray-200 outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
         </div>
-    )
-}
 
-export default Register
+        {/* Email */}
+        <div className="flex flex-col mb-4">
+          <label className="mb-1 text-gray-700">Email</label>
+          <input
+            type="email"
+            placeholder="exemple@email.com"
+            className="rounded-full px-4 py-3 bg-gray-200 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Password */}
+        <div className="flex flex-col mb-6">
+          <label className="mb-1 text-gray-700">Password</label>
+          <input
+            type="password"
+            placeholder="********"
+            className="rounded-full px-4 py-3 bg-gray-200 outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+       
+
+        {/* Button */}
+        <button className="w-full py-3 rounded-full text-white text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-400 hover:scale-[1.02] transition">
+          Register
+        </button>
+      </div>
+    </div>
+  );
+}

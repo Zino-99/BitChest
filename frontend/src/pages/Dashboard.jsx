@@ -16,3 +16,4 @@ export default function Dashboard() {
 
     return renderDashboard(user.role)
 }
+
