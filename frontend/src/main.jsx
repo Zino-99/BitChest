@@ -11,12 +11,13 @@ import Wallet from './pages/user/Wallet.jsx'
 import CreateUser from './pages/Admin/CreateUser.jsx'
 import Profile from './pages/Admin/Profile.jsx'
 import Login from './pages/Login.jsx'
+import TestBack from './TestBack.jsx'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Register />}></Route>
+                <Route path="/" element={<TestBack />}></Route>
                 <Route path="/Login" element={<Login />}></Route>
                 <Route path="/Dashboard" element={<Dashboard />}></Route>
                 <Route path="/Dashboard/Market" element={<Market />}></Route>
