@@ -100,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setRole(string $role): static
     {
-        if (!in_array($role, [self::ROLE_ADMIN, self::ROLE_CLIENT])) {
+        if (!in_array($role, [self::ROLE_ADMIN, self::ROLE_USER])) {
             throw new \InvalidArgumentException("Role invalide");
         }
         $this->role = $role;
