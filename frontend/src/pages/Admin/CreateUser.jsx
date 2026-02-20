@@ -1,6 +1,8 @@
 import Navbar from '../../components/admin/Navbar'
 import BitchestLogo from '../../assets/bitchest_logo.png'
 import { Link } from 'react-router-dom'
+import Form from '../../components/admin/form'
+
 export default function CreateUser() {
     return (
         <div className="grid grid-cols-[250px_1fr] min-h-screen">
@@ -16,7 +18,9 @@ export default function CreateUser() {
             </aside>
 
             {/* CONTENT */}
-            <main className="p-6  bg-white">Create Users Overview</main>
+            <main className="p-6  bg-white">
+                <Form />
+            </main>
         </div>
     )
 }

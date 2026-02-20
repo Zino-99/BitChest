@@ -11,7 +11,7 @@ export default function Navbar() {
         <nav>
             <ul className="flex flex-col gap-2.5">
                 {NavLinks.map((navlink, index) => (
-                    <Link to={navlink.path}>
+                    <Link key={index} to={navlink.path}>
                         <li
                             className="py-2.5 px-8 hover:bg-[#E6E6E6] hover:text-black text-[#666666] text-sm rounded-[10px]"
                             key={index}
