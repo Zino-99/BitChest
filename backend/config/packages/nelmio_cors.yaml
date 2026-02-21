@@ -1,12 +1,12 @@
 nelmio_cors:
     defaults:
-        allow_origin: ['http://localhost:5173'] # ← React dev server
         allow_credentials: false
-        allow_headers: ['Content-Type', 'Authorization']
+        allow_origin: ['http://localhost:5173']
+        allow_headers: ['Content-Type', 'Accept', 'Authorization']
         allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         max_age: 3600
     paths:
         '^/api/':
             allow_origin: ['http://localhost:5173']
-            allow_headers: ['Content-Type', 'Authorization']
+            allow_headers: ['Content-Type', 'Accept', 'Authorization']
             allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']

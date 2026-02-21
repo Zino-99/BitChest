@@ -5,20 +5,36 @@ export default function Register() {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage(null);
 
-    const res = await fetch("http://localhost:8000/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstname, lastname, email, password }),
-    });
+    try {
+      const res = await fetch("https://127.0.0.1:8000/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstname, lastname, email, password }),
+      });
 
-    if (res.ok) {
-      alert("User registered!");
-    } else {
-      alert("Error registering user");
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage({ type: "success", text: data.message || "Utilisateur créé !" });
+        setFirstname("");
+        setLastname("");
+        setEmail("");
+        setPassword("");
+      } else {
+        setMessage({ type: "error", text: data.message || "Erreur lors de l'inscription" });
+      }
+    } catch (err) {
+      setMessage({ type: "error", text: "Impossible de contacter le serveur" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,6 +43,16 @@ export default function Register() {
       <div className="bg-gray-100 w-[420px] rounded-3xl shadow-xl p-8">
         <h1 className="text-4xl font-bold text-center text-blue-500 mb-2">BitChest</h1>
         <p className="text-center text-gray-600 mb-8">Sign up for BitChest</p>
+
+        {message && (
+          <div
+            className={`mb-4 p-3 rounded ${
+              message.type === "success" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4 mb-4">
@@ -81,9 +107,10 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-full text-white text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-400 hover:scale-[1.02] transition"
+            disabled={loading}
+            className="w-full py-3 rounded-full text-white text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-400 hover:scale-[1.02] transition disabled:opacity-50"
           >
-            Register
+            {loading ? "Création..." : "Register"}
           </button>
         </form>
       </div>
