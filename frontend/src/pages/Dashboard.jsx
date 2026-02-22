@@ -1,19 +1,19 @@
-import AdminDashboard from './Admin/AdminDashboard'
-import UserDashboard from './User/UserDashboard'
-function renderDashboard(role) {
-    switch (role) {
-        case 'admin':
-            return <AdminDashboard />
-        case 'user':
-            return <UserDashboard />
-        default:
-            return <UserDashboard />
-    }
-}
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
-    const user = { role: 'admin' }
+    const navigate = useNavigate()
+    const user = JSON.parse(sessionStorage.getItem("user"))
 
-    return renderDashboard(user.role)
+    useEffect(() => {
+        if (!user) {
+            navigate("/Login")
+        } else if (user.role === "admin") {
+            navigate("/Dashboard/admin")
+        } else {
+            navigate("/Dashboard/Wallet")
+        }
+    }, [])
+
+    return null
 }
-

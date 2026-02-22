@@ -1,11 +1,45 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 
 const Login = () => {
-return (
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch("https://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/Dashboard");
+      } else {
+        setMessage(data.message || "Identifiants incorrects");
+      }
+    } catch (err) {
+      setMessage("Impossible de contacter le serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
     <div className="min-h-screen flex items-center justify-center bg-[#43698f]">
       <div className="bg-gray-100 w-[420px] rounded-3xl shadow-xl p-8">
-        
-        {/* Title */}
         <h1 className="text-4xl font-bold text-center text-blue-500 mb-2">
           BitChest
         </h1>
@@ -13,36 +47,63 @@ return (
           Sign in to your account
         </p>
 
-        {/* Email */}
-        <div className="flex flex-col mb-5">
-          <label className="mb-2 text-gray-800">Email Address</label>
-          <div className="flex items-center bg-gray-200 rounded-full px-4 py-3">
-            <Mail className="text-gray-500 mr-3" size={20} />
-            <input
-              type="email"
-              placeholder="you@email.com"
-              className="bg-transparent w-full outline-none"
-            />
+        {message && (
+          <div className="mb-4 p-3 rounded-xl bg-red-200 text-red-800 text-sm text-center">
+            {message}
           </div>
-        </div>
+        )}
 
-        {/* Password */}
-        <div className="flex flex-col mb-8">
-          <label className="mb-2 text-gray-800">Password</label>
-          <div className="flex items-center bg-gray-200 rounded-full px-4 py-3">
-            <Lock className="text-gray-500 mr-3" size={20} />
-            <input
-              type="password"
-              placeholder="************"
-              className="bg-transparent w-full outline-none"
-            />
+        <form onSubmit={handleSubmit}>
+          {/* Email */}
+          <div className="flex flex-col mb-5">
+            <label className="mb-2 text-gray-800">Email Address</label>
+            <div className="flex items-center bg-gray-200 rounded-full px-4 py-3">
+              <Mail className="text-gray-500 mr-3" size={20} />
+              <input
+                type="email"
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-transparent w-full outline-none"
+                required
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Button */}
-        <button className="w-full py-4 rounded-full text-white text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-400 hover:scale-[1.02] transition">
-          Sign in
-        </button>
+          {/* Password */}
+          <div className="flex flex-col mb-8">
+            <label className="mb-2 text-gray-800">Password</label>
+            <div className="flex items-center bg-gray-200 rounded-full px-4 py-3">
+              <Lock className="text-gray-500 mr-3" size={20} />
+              <input
+                type="password"
+                placeholder="************"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-transparent w-full outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-4 rounded-full text-white text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-400 hover:scale-[1.02] transition disabled:opacity-50"
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
+
+        {/* Register link */}
+        <p className="text-center text-gray-500 mt-6 text-sm">
+          Not registered yet?{" "}
+          <a href="/register" className="text-blue-500 hover:underline font-semibold">
+            Sign up now
+          </a>
+        </p>
+
       </div>
     </div>
   );

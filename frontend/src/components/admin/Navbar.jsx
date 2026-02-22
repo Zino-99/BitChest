@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const NavLinks = [
     { name: 'Dashboard', path: '/Dashboard' },
-    { name: 'Create User', path: '/Dashboard/CreateUser' },
+    { name: 'User Management', path: '/Dashboard/CreateUser' },
     { name: 'Profile', path: '/Dashboard/Profile' },
 ]
 

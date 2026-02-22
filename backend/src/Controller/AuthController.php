@@ -20,12 +20,10 @@ class AuthController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
-        // Vérification des champs obligatoires
         if (empty($data['firstname']) || empty($data['lastname']) || empty($data['email']) || empty($data['password'])) {
             return $this->json(['message' => 'Tous les champs sont obligatoires'], 400);
         }
 
-        // Vérification email déjà utilisé
         $existing = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existing) {
             return $this->json(['message' => 'Cet email est déjà utilisé'], 409);
@@ -36,6 +34,7 @@ class AuthController extends AbstractController
         $user->setLastname($data['lastname']);
         $user->setEmail($data['email']);
         $user->setPassword($hasher->hashPassword($user, $data['password']));
+        // role = 'user' par défaut grâce au constructeur de l'entité
 
         $em->persist($user);
         $em->flush();
@@ -51,5 +50,35 @@ class AuthController extends AbstractController
                 'createdAt' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
             ]
         ], 201);
+    }
+
+    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    public function login(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['email']) || empty($data['password'])) {
+            return $this->json(['message' => 'Email et mot de passe requis'], 400);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+
+        if (!$user || !$hasher->isPasswordValid($user, $data['password'])) {
+            return $this->json(['message' => 'Identifiants incorrects'], 401);
+        }
+
+        return $this->json([
+            'message' => 'Connexion réussie',
+            'user' => [
+                'id'        => $user->getId(),
+                'firstname' => $user->getFirstname(),
+                'lastname'  => $user->getLastname(),
+                'email'     => $user->getEmail(),
+                'role'      => $user->getRole(),
+            ]
+        ], 200);
     }
 }
