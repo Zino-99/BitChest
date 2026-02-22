@@ -23,7 +23,7 @@ export default function AdminLayout() {
     <aside className="h-full flex flex-col w-[270px]" style={{ backgroundColor: "#38618C" }}>
       {/* Title */}
       <div className="p-4 h-[150px] flex items-center justify-center">
-        <h1 className="text-3xl font-bold text-white tracking-tight">Bitchest</h1>
+        <h1 className="text-5xl font-bold text-white tracking-tight">Bitchest</h1>
       </div>
 
       {/* User Info */}
