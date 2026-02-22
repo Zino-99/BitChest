@@ -9,9 +9,9 @@ export default function Dashboard() {
         if (!user) {
             navigate("/Login")
         } else if (user.role === "admin") {
-            navigate("/Dashboard/admin")
+            navigate("/admin/Market")
         } else {
-            navigate("/Dashboard/Wallet")
+            navigate("/user/Wallet")
         }
     }, [])
 

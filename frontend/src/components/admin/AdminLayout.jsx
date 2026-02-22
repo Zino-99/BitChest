@@ -1,15 +1,14 @@
 import { useState } from "react"
 import { useNavigate, useLocation, Outlet } from "react-router-dom"
-import { Wallet, TrendingUp, BarChart2, Menu, X } from "lucide-react"
-import BitchestLogo from '../../assets/bitchest_logo.png'
+import { TrendingUp, Users, User, Menu, X } from "lucide-react"
 
 const navItems = [
-  { label: "My Wallet", icon: Wallet, path: "/user/Wallet" },
-  { label: "Market", icon: TrendingUp, path: "/user/Market" },
-  { label: "Data", icon: BarChart2, path: "/user/Data" },
+  { label: "Market", icon: TrendingUp, path: "/admin/Market" },
+  { label: "User Management", icon: Users, path: "/admin/CreateUser" },
+  { label: "Profile", icon: User, path: "/admin/Profile" },
 ]
 
-export default function UserLayout() {
+export default function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const user = JSON.parse(sessionStorage.getItem("user") || "{}")
@@ -22,11 +21,10 @@ export default function UserLayout() {
 
   const Sidebar = () => (
     <aside className="h-full flex flex-col w-[270px]" style={{ backgroundColor: "#38618C" }}>
-      {/* Logo */}
-    <div className="p-4 h-[150px] flex items-center justify-center">
-        <h1 className="text-5xl font-bold text-white tracking-tight">BitChest</h1>
-    </div>
-
+      {/* Title */}
+      <div className="p-4 h-[150px] flex items-center justify-center">
+        <h1 className="text-3xl font-bold text-white tracking-tight">Bitchest</h1>
+      </div>
 
       {/* User Info */}
       <div className="px-5 py-4 border-b border-white/20">
@@ -46,7 +44,6 @@ export default function UserLayout() {
               className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all text-left w-full group
                 ${isActive ? "bg-white/20" : "hover:bg-white/10"}`}
             >
-              {/* Icon bubble */}
               <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all
                 ${isActive ? "bg-white/30" : "bg-white/10 group-hover:bg-white/20"}`}>
                 <Icon size={22} className="text-white" />
@@ -74,8 +71,8 @@ export default function UserLayout() {
   return (
     <div className="min-h-screen bg-white">
       {/* Mobile top bar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-[#EAEAEA]" style={{ backgroundColor: "#38618C" }}>
-        <img src={BitchestLogo} alt="logo" className="h-8" />
+      <div className="md:hidden flex items-center justify-between px-4 py-3" style={{ backgroundColor: "#38618C" }}>
+        <h1 className="text-xl font-bold text-white">Bitchest</h1>
         <button onClick={() => setIsOpen(!isOpen)} className="text-white">
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
