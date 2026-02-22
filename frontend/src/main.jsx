@@ -12,6 +12,7 @@ import UserLayout from './components/user/UserLayout.jsx'
 import AdminLayout from './components/admin/AdminLayout.jsx'
 import CreateUser from './pages/Admin/CreateUser.jsx'
 import Profile from './pages/Admin/Profile.jsx'
+import Data from './pages/user/Data.jsx'
 
 function PrivateRoute({ children }) {
     const user = sessionStorage.getItem("user")
@@ -33,7 +34,7 @@ createRoot(document.getElementById('root')).render(
             <Route element={<PrivateRoute><UserLayout /></PrivateRoute>}>
                 <Route path="/user/Wallet" element={<Wallet />} />
                 <Route path="/user/Market" element={<Market />} />
-                <Route path="/user/Data" element={<div>Data</div>} />
+                <Route path="/user/Data" element={<Data />} />
             </Route>
 
             {/* Admin */}
