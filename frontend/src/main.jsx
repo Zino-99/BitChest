@@ -11,8 +11,18 @@ import Wallet from './pages/user/Wallet.jsx'
 import UserLayout from './components/user/UserLayout.jsx'
 import AdminLayout from './components/admin/AdminLayout.jsx'
 import CreateUser from './pages/Admin/CreateUser.jsx'
-import Profile from './pages/Admin/Profile.jsx'
-import Data from './pages/user/Data.jsx'
+
+import Data from './pages/Data.jsx'
+
+if (import.meta.env.DEV) {
+    sessionStorage.setItem("user", JSON.stringify({
+        id: 1,
+        firstname: "John",
+        lastname: "Smith",
+        email: "john@test.com",
+        role: "user"
+    }))
+}
 
 // if (import.meta.env.DEV) {
 //     sessionStorage.setItem(
@@ -35,7 +45,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <Routes>
             {/* Public */}
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -65,7 +75,7 @@ createRoot(document.getElementById('root')).render(
             >
                 <Route path="/admin/Market" element={<Market />} />
                 <Route path="/admin/CreateUser" element={<CreateUser />} />
-                <Route path="/admin/Profile" element={<Profile />} />
+                <Route path="/admin/Profile" element={<Data />} />
             </Route>
 
             {/* Fallback */}
