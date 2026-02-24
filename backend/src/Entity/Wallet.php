@@ -14,37 +14,25 @@ class Wallet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'wallet', targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?User $user = null;
-
     #[ORM\Column(type: 'decimal', precision: 18, scale: 2, options: ['default' => 500])]
     private string $euroBalance = '500.00';
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\OneToOne(mappedBy: 'wallet', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    // Getters / Setters
+    // ----------------- Getters / Setters -----------------
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): static
-    {
-        $this->user = $user;
-        return $this;
     }
 
     public function getEuroBalance(): string
@@ -61,5 +49,33 @@ class Wallet
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setWallet(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getWallet() !== $this) {
+            $user->setWallet($this);
+        }
+
+        $this->user = $user;
+
+        return $this;
     }
 }

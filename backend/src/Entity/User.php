@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?wallet $wallet = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -151,5 +154,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // On n’a pas de données temporaires sensibles ici
+    }
+
+    public function getWallet(): ?wallet
+    {
+        return $this->wallet;
+    }
+
+    public function setWallet(?wallet $wallet): static
+    {
+        $this->wallet = $wallet;
+
+        return $this;
     }
 }
