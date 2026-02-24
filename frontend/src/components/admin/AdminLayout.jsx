@@ -4,7 +4,7 @@ import { TrendingUp, Users, User, Menu, X } from "lucide-react"
 
 const navItems = [
   { label: "Market", icon: TrendingUp, path: "/admin/Market" },
-  { label: "User Management", icon: Users, path: "/admin/CreateUser" },
+  { label: "User Management", icon: Users, path: "/admin/UserManagement" },
   { label: "Profile", icon: User, path: "/admin/Profile" },
 ]
 
