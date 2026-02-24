@@ -14,8 +14,20 @@ import CreateUser from './pages/Admin/CreateUser.jsx'
 import Profile from './pages/Admin/Profile.jsx'
 import Data from './pages/user/Data.jsx'
 
+// if (import.meta.env.DEV) {
+//     sessionStorage.setItem(
+//         'user',
+//         JSON.stringify({
+//             id: 1,
+//             firstname: 'John',
+//             lastname: 'Smith',
+//             email: 'john@test.com',
+//             role: 'user',
+//         })
+//     )
+// }
 function PrivateRoute({ children }) {
-    const user = sessionStorage.getItem("user")
+    const user = sessionStorage.getItem('user')
     return user ? children : <Navigate to="/Login" />
 }
 
@@ -31,14 +43,26 @@ createRoot(document.getElementById('root')).render(
             <Route path="/Dashboard" element={<Dashboard />} />
 
             {/* User */}
-            <Route element={<PrivateRoute><UserLayout /></PrivateRoute>}>
+            <Route
+                element={
+                    <PrivateRoute>
+                        <UserLayout />
+                    </PrivateRoute>
+                }
+            >
                 <Route path="/user/Wallet" element={<Wallet />} />
                 <Route path="/user/Market" element={<Market />} />
                 <Route path="/user/Data" element={<Data />} />
             </Route>
 
             {/* Admin */}
-            <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
+            <Route
+                element={
+                    <PrivateRoute>
+                        <AdminLayout />
+                    </PrivateRoute>
+                }
+            >
                 <Route path="/admin/Market" element={<Market />} />
                 <Route path="/admin/CreateUser" element={<CreateUser />} />
                 <Route path="/admin/Profile" element={<Profile />} />
