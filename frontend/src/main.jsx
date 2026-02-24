@@ -14,14 +14,26 @@ import CreateUser from './pages/Admin/CreateUser.jsx'
 
 import Data from './pages/Data.jsx'
 
+// if (import.meta.env.DEV) {
+//     sessionStorage.setItem("user", JSON.stringify({
+//         id: 1,
+//         firstname: "John",
+//         lastname: "Smith",
+//         email: "john@test.com",
+//         role: "user"
+//     }))
+// }
 if (import.meta.env.DEV) {
-    sessionStorage.setItem("user", JSON.stringify({
-        id: 1,
-        firstname: "John",
-        lastname: "Smith",
-        email: "john@test.com",
-        role: "user"
-    }))
+    sessionStorage.setItem(
+        'user',
+        JSON.stringify({
+            id: 1,
+            firstname: 'admin',
+            lastname: 'admin',
+            email: 'admin@test.com',
+            role: 'admin',
+        })
+    )
 }
 
 // if (import.meta.env.DEV) {
