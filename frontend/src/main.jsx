@@ -10,44 +10,25 @@ import Market from './pages/User/Market.jsx'
 import Wallet from './pages/user/Wallet.jsx'
 import UserLayout from './components/user/UserLayout.jsx'
 import AdminLayout from './components/admin/AdminLayout.jsx'
-import CreateUser from './pages/Admin/CreateUser.jsx'
+import UserManagement from './pages/admin/UserManagement.jsx'
 
 import Data from './pages/Data.jsx'
 
-// if (import.meta.env.DEV) {
-//     sessionStorage.setItem("user", JSON.stringify({
-//         id: 1,
-//         firstname: "John",
-//         lastname: "Smith",
-//         email: "john@test.com",
-//         role: "user"
-//     }))
-// }
+<<<<<<< HEAD
 if (import.meta.env.DEV) {
-    sessionStorage.setItem(
-        'user',
-        JSON.stringify({
-            id: 1,
-            firstname: 'admin',
-            lastname: 'admin',
-            email: 'admin@test.com',
-            role: 'admin',
-        })
-    )
+    sessionStorage.setItem("user", JSON.stringify({
+        id: 1,
+        firstname: "John",
+        lastname: "Smith",
+        email: "john@test.com",
+        role: "user"
+    }))
 }
 
-// if (import.meta.env.DEV) {
-//     sessionStorage.setItem(
-//         'user',
-//         JSON.stringify({
-//             id: 1,
-//             firstname: 'John',
-//             lastname: 'Smith',
-//             email: 'john@test.com',
-//             role: 'user',
-//         })
-//     )
-// }
+=======
+>>>>>>> 33adea906d1e7cac1f3b7f60f26ac3d4bef7513d
+
+
 function PrivateRoute({ children }) {
     const user = sessionStorage.getItem('user')
     return user ? children : <Navigate to="/Login" />
@@ -57,7 +38,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <Routes>
             {/* Public */}
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Login />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -86,7 +67,7 @@ createRoot(document.getElementById('root')).render(
                 }
             >
                 <Route path="/admin/Market" element={<Market />} />
-                <Route path="/admin/CreateUser" element={<CreateUser />} />
+                <Route path="/admin/UserManagement" element={<UserManagement />} />
                 <Route path="/admin/Profile" element={<Data />} />
             </Route>
 
