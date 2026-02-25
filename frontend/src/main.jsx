@@ -14,21 +14,31 @@ import UserManagement from './pages/admin/UserManagement.jsx'
 
 import Data from './pages/Data.jsx'
 
-<<<<<<< HEAD
 if (import.meta.env.DEV) {
-    sessionStorage.setItem("user", JSON.stringify({
-        id: 1,
-        firstname: "John",
-        lastname: "Smith",
-        email: "john@test.com",
-        role: "user"
-    }))
+    sessionStorage.setItem(
+        'admin',
+        JSON.stringify({
+            id: 1,
+            firstname: 'John',
+            lastname: 'Smith',
+            email: 'john@test.com',
+            role: 'admin',
+        })
+    )
 }
 
-=======
->>>>>>> 33adea906d1e7cac1f3b7f60f26ac3d4bef7513d
-
-
+// if (import.meta.env.DEV) {
+//     sessionStorage.setItem(
+//         'admin',
+//         JSON.stringify({
+//             id: 1,
+//             firstname: 'Admin',
+//             lastname: 'Admin',
+//             email: 'admin@gmail.com',
+//             role: 'admin',
+//         })
+//     )
+// }
 function PrivateRoute({ children }) {
     const user = sessionStorage.getItem('user')
     return user ? children : <Navigate to="/Login" />
@@ -67,7 +77,10 @@ createRoot(document.getElementById('root')).render(
                 }
             >
                 <Route path="/admin/Market" element={<Market />} />
-                <Route path="/admin/UserManagement" element={<UserManagement />} />
+                <Route
+                    path="/admin/UserManagement"
+                    element={<UserManagement />}
+                />
                 <Route path="/admin/Profile" element={<Data />} />
             </Route>
 
