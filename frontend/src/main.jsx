@@ -45,6 +45,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/admin/Profile" element={<Data />} />
             </Route>
 
+    
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/Login" />} />
         </Routes>
