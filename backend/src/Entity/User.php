@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,10 +49,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    /**
+     * @var Collection<int, Wallet>
+     */
+    #[ORM\OneToMany(targetEntity: Wallet::class, mappedBy: 'user')]
+    private Collection $wallets;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->role = self::ROLE_USER; // valeur par défaut
+        $this->wallets = new ArrayCollection();
     }
 
     // ----------------- Getters / Setters -----------------
@@ -151,5 +160,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // On n’a pas de données temporaires sensibles ici
+    }
+
+    /**
+     * @return Collection<int, Wallet>
+     */
+    public function getWallets(): Collection
+    {
+        return $this->wallets;
+    }
+
+    public function addWallet(Wallet $wallet): static
+    {
+        if (!$this->wallets->contains($wallet)) {
+            $this->wallets->add($wallet);
+            $wallet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWallet(Wallet $wallet): static
+    {
+        if ($this->wallets->removeElement($wallet)) {
+            // set the owning side to null (unless already changed)
+            if ($wallet->getUser() === $this) {
+                $wallet->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
