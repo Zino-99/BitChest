@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Entity\Wallet;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $createdAt;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?wallet $wallet = null;
+    private ?Wallet $wallet = null;
 
     public function __construct()
     {
@@ -130,13 +131,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // retourne le rôle au format ROLE_ADMIN / ROLE_CLIENT
         return ['ROLE_' . strtoupper($this->role)];
     }
 
     public function setRoles(array $roles): static
     {
-        // tu peux ignorer ou utiliser pour ajouter des rôles supplémentaires
         return $this;
     }
 
@@ -153,18 +152,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // On n’a pas de données temporaires sensibles ici
+        // Pas de données temporaires sensibles
     }
 
-    public function getWallet(): ?wallet
+    // ----------------- Wallet OneToOne -----------------
+
+    public function getWallet(): ?Wallet
     {
         return $this->wallet;
     }
 
-    public function setWallet(?wallet $wallet): static
+    public function setWallet(?Wallet $wallet): static
     {
         $this->wallet = $wallet;
-
         return $this;
     }
 }

@@ -28,8 +28,6 @@ class Wallet
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    // ----------------- Getters / Setters -----------------
-
     public function getId(): ?int
     {
         return $this->id;
@@ -64,12 +62,10 @@ class Wallet
 
     public function setUser(?User $user): static
     {
-        // unset the owning side of the relation if necessary
         if ($user === null && $this->user !== null) {
             $this->user->setWallet(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($user !== null && $user->getWallet() !== $this) {
             $user->setWallet($this);
         }
