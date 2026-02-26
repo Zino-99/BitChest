@@ -62,11 +62,7 @@ class Wallet
      * Usage interne uniquement (pour la synchronisation bidirectionnelle)
      * Ne persiste PAS en BDD avec user = null
      */
-    public function detachUser(): static  // ← Méthode spéciale pour détacher
-    {
-        $this->user = null;  // Temporaire, avant suppression complète
-        return $this;
-    }
+
 
     public function getEuroBalance(): string
     {
