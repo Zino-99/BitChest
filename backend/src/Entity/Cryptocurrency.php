@@ -17,8 +17,8 @@ class Cryptocurrency
     #[ORM\Column(length: 10, unique: true)]
     private ?string $symbol = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $name = null;
+    #[ORM\Column(length: 100, nullable: false)]
+    private string $name;
 
     // ----------------- Getters / Setters -----------------
 

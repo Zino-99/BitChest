@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use App\Entity\Wallet;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,13 +47,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Wallet $wallet = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->role = self::ROLE_USER; // valeur par défaut
+        $this->role = self::ROLE_USER;
     }
 
     // ----------------- Getters / Setters -----------------
@@ -122,6 +121,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // ----------------- Wallet OneToOne -----------------
+
+    public function getWallet(): ?Wallet
+    {
+        return $this->wallet;
+    }
+
+    public function setWallet(?Wallet $wallet): static
+    {
+
+        // Si on assigne un nouveau wallet, on met à jour le côté Wallet aussi
+        if ($wallet !== null && $wallet->getUser() !== $this) {
+            $wallet->setUser($this);
+        }
+
+        $this->wallet = $wallet;
+
+        return $this;
+    }
+
     // ----------------- Symfony Security -----------------
 
     public function getUserIdentifier(): string
@@ -153,18 +172,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // Pas de données temporaires sensibles
-    }
-
-    // ----------------- Wallet OneToOne -----------------
-
-    public function getWallet(): ?Wallet
-    {
-        return $this->wallet;
-    }
-
-    public function setWallet(?Wallet $wallet): static
-    {
-        $this->wallet = $wallet;
-        return $this;
     }
 }
