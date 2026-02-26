@@ -48,7 +48,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <Routes>
             {/* Public */}
-            <Route path="/" element={<Market />} />
+            <Route path="/" element={<Login />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

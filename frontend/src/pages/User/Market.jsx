@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import Button from '../../components/Button'
 
 const Market = () => {
     const [cryptos, setCryptos] = useState([])
     const [loading, setLoading] = useState(true) // Pour le loader
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/cryptocurrencies/', { method: 'GET' }) // <-- Ici
+        fetch('http://127.0.0.1:8000/api/cryptocurrencies', { method: 'GET' }) // <-- Ici
             .then((res) => res.json())
             .then((data) => {
                 setCryptos(data)
@@ -43,6 +44,10 @@ const Market = () => {
                     <li>Aucune crypto disponible.</li>
                 )}
             </ul>
+            <div className="flex gap-4 mt-3">
+                <Button type="Buy" color="green" />
+                <Button type="sell" color="red" />
+            </div>
         </div>
     )
 }
