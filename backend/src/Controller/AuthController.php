@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Wallet;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,7 +37,12 @@ class AuthController extends AbstractController
         $user->setEmail($data['email']);
         $user->setPassword($hasher->hashPassword($user, $data['password']));
 
+        // Création du wallet automatiquement à l'inscription
+        $wallet = new Wallet($user);
+        $user->setWallet($wallet);
+
         $em->persist($user);
+        $em->persist($wallet);
         $em->flush();
 
         return $this->json([

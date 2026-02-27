@@ -1,46 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, ChevronDown, ChevronUp } from "lucide-react";
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-const mockWallet = {
-  user: { firstname: "Bruno", lastname: "Dupont" },
-  euroBalance: 1250.0,
-  cryptos: [
-    {
-      id: 1,
-      name: "Bitcoin",
-      symbol: "BTC",
-      currentPrice: 30000,
-      color: "#F7931A",
-      purchases: [
-        { id: 1, date: "2020-10-01", quantity: 1, priceAtPurchase: 10000 },
-        { id: 2, date: "2021-03-14", quantity: 0.5, priceAtPurchase: 18000 },
-        { id: 3, date: "2022-01-27", quantity: 0.5, priceAtPurchase: 20000 },
-      ],
-    },
-    {
-      id: 2,
-      name: "Ethereum",
-      symbol: "ETH",
-      currentPrice: 1800,
-      color: "#627EEA",
-      purchases: [
-        { id: 4, date: "2021-05-10", quantity: 3, priceAtPurchase: 3200 },
-        { id: 5, date: "2022-06-20", quantity: 2, priceAtPurchase: 1100 },
-      ],
-    },
-    {
-      id: 3,
-      name: "Solana",
-      symbol: "SOL",
-      currentPrice: 95,
-      color: "#9945FF",
-      purchases: [
-        { id: 6, date: "2023-01-15", quantity: 10, priceAtPurchase: 120 },
-      ],
-    },
-  ],
-};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function computeCryptoStats(crypto) {
@@ -56,26 +15,35 @@ function computeCryptoStats(crypto) {
 }
 
 function fmt(n, decimals = 2) {
-  return n.toLocaleString("fr-FR", {
+  return Number(n).toLocaleString("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });
 }
 
 function fmtDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString("fr-FR");
+  return new Date(dateStr).toLocaleDateString("en-US");
 }
 
-// ─── Components ───────────────────────────────────────────────────────────────
+// ─── CryptoCard ───────────────────────────────────────────────────────────────
+const CRYPTO_COLORS = {
+  BTC: "#F7931A",
+  ETH: "#627EEA",
+  SOL: "#9945FF",
+  BNB: "#F3BA2F",
+  ADA: "#0033AD",
+  XRP: "#346AA9",
+};
 
 function CryptoCard({ crypto }) {
   const [open, setOpen] = useState(false);
   const { totalQty, totalCost, avgUnitCost, currentValue, gain } =
     computeCryptoStats(crypto);
   const positive = gain >= 0;
+  const color = CRYPTO_COLORS[crypto.symbol] ?? "#43698f";
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-4">
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
@@ -83,7 +51,7 @@ function CryptoCard({ crypto }) {
         <div className="flex items-center gap-4">
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow"
-            style={{ backgroundColor: crypto.color }}
+            style={{ backgroundColor: color }}
           >
             {crypto.symbol.slice(0, 2)}
           </div>
@@ -97,31 +65,27 @@ function CryptoCard({ crypto }) {
 
         <div className="flex items-center gap-8">
           <div className="text-right hidden sm:block">
-            <p className="text-xs text-gray-400">Coût unitaire</p>
+            <p className="text-xs text-gray-400">Unit cost</p>
             <p className="text-sm font-medium text-gray-700">
               {fmt(avgUnitCost)} €
             </p>
           </div>
 
           <div className="text-right hidden sm:block">
-            <p className="text-xs text-gray-400">Valeur actuelle</p>
+            <p className="text-xs text-gray-400">Current value</p>
             <p className="text-sm font-medium text-gray-700">
               {fmt(currentValue)} €
             </p>
           </div>
 
           <div className="text-right min-w-[100px]">
-            <p className="text-xs text-gray-400">Plus-value</p>
+            <p className="text-xs text-gray-400">Gain / Loss</p>
             <p
               className={`text-sm font-bold flex items-center justify-end gap-1 ${
                 positive ? "text-green-500" : "text-red-500"
               }`}
             >
-              {positive ? (
-                <TrendingUp size={14} />
-              ) : (
-                <TrendingDown size={14} />
-              )}
+              {positive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
               {positive ? "+" : ""}
               {fmt(gain)} €
             </p>
@@ -136,15 +100,15 @@ function CryptoCard({ crypto }) {
       {open && (
         <div className="border-t border-gray-100 bg-gray-50 px-6 py-4">
           <p className="text-xs font-semibold text-gray-400 uppercase mb-3 tracking-wide">
-            Historique des achats
+            Purchase history
           </p>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-gray-400 text-xs uppercase">
                 <th className="text-left pb-2">Date</th>
-                <th className="text-right pb-2">Quantité</th>
-                <th className="text-right pb-2">Cours d'achat</th>
-                <th className="text-right pb-2">Total payé</th>
+                <th className="text-right pb-2">Quantity</th>
+                <th className="text-right pb-2">Purchase price</th>
+                <th className="text-right pb-2">Total paid</th>
               </tr>
             </thead>
             <tbody>
@@ -164,6 +128,31 @@ function CryptoCard({ crypto }) {
               ))}
             </tbody>
           </table>
+
+          <div className="mt-4 pt-3 border-t border-gray-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+            <div>
+              <p className="text-gray-400 text-xs">Total invested</p>
+              <p className="font-semibold text-gray-800">{fmt(totalCost)} €</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">Total quantity</p>
+              <p className="font-semibold text-gray-800">
+                {fmt(totalQty, 4)} {crypto.symbol}
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">Avg unit cost</p>
+              <p className="font-semibold text-gray-800">
+                {fmt(avgUnitCost)} €
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">Current price</p>
+              <p className="font-semibold text-blue-500">
+                {fmt(crypto.currentPrice)} €
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -172,7 +161,49 @@ function CryptoCard({ crypto }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Wallet() {
-  const wallet = mockWallet;
+  const [wallet, setWallet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    fetch("https://127.0.0.1:8000/api/wallet", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-User-Id": user?.id,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized or server error");
+        return res.json();
+      })
+      .then((data) => setWallet(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-500 text-lg animate-pulse">
+          Loading your portfolio...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white rounded-2xl p-8 text-center shadow-xl max-w-sm">
+          <p className="text-red-500 font-semibold mb-2">Error</p>
+          <p className="text-gray-600 text-sm">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const totalInvested = wallet.cryptos.reduce((s, c) => {
     const { totalCost } = computeCryptoStats(c);
@@ -188,56 +219,58 @@ export default function Wallet() {
   const totalPositive = totalGain >= 0;
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Solde EUR
-            </p>
-            <p className="text-2xl font-bold text-gray-800">
-              {fmt(wallet.euroBalance)} €
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Valeur du portefeuille
-            </p>
-            <p className="text-2xl font-bold text-blue-600">
-              {fmt(totalCurrentValue)} €
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Plus-value globale
-            </p>
-            <p
-              className={`text-2xl font-bold flex items-center gap-2 ${
-                totalPositive ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {totalPositive ? (
-                <TrendingUp size={20} />
-              ) : (
-                <TrendingDown size={20} />
-              )}
-              {totalPositive ? "+" : ""}
-              {fmt(totalGain)} €
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-3xl mx-auto mb-6">
+        <h1 className="text-4xl font-bold text-gray-800">
+          Hello, {wallet.user.firstname} {wallet.user.lastname} 👋
+        </h1>
+        <p className="text-gray-400 text-sm mt-1">Here is your portfolio</p>
+      </div>
 
-        <div>
-          {wallet.cryptos.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 text-center text-gray-400 shadow-xl">
-              Vous ne possédez aucune crypto pour le moment.
-            </div>
-          ) : (
-            wallet.cryptos.map((c) => (
-              <CryptoCard key={c.id} crypto={c} />
-            ))
-          )}
+      <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white rounded-2xl p-5 shadow-md">
+          <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
+            EUR Balance
+          </p>
+          <p className="text-2xl font-bold text-gray-800">
+            {fmt(wallet.euroBalance)} €
+          </p>
         </div>
+        <div className="bg-white rounded-2xl p-5 shadow-md">
+          <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
+            Portfolio value
+          </p>
+          <p className="text-2xl font-bold text-blue-500">
+            {fmt(totalCurrentValue)} €
+          </p>
+        </div>
+        <div className="bg-white rounded-2xl p-5 shadow-md">
+          <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
+            Global gain / loss
+          </p>
+          <p
+            className={`text-2xl font-bold flex items-center gap-2 ${
+              totalPositive ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {totalPositive ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+            {totalPositive ? "+" : ""}
+            {fmt(totalGain)} €
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-gray-700 font-semibold text-lg mb-4">
+          My cryptocurrencies
+        </h2>
+        {wallet.cryptos.length === 0 ? (
+          <div className="bg-white rounded-2xl p-8 text-center text-gray-400 shadow">
+            You don't own any cryptocurrency yet.
+          </div>
+        ) : (
+          wallet.cryptos.map((c) => <CryptoCard key={c.id} crypto={c} />)
+        )}
       </div>
     </div>
   );

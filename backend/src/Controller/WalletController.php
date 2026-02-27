@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\WalletRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,17 +14,15 @@ class WalletController extends AbstractController
     #[Route('/wallet', name: 'api_wallet', methods: ['GET'])]
     public function getWallet(
         Request $request,
-        WalletRepository $walletRepository,
         UserRepository $userRepository
     ): JsonResponse {
-        // Récupération de l'utilisateur depuis la session (cohérent avec le Login)
-        $userData = $request->getSession()->get('user');
+        $userId = $request->headers->get('X-User-Id');
 
-        if (!$userData) {
+        if (!$userId) {
             return $this->json(['message' => 'Non authentifié'], 401);
         }
 
-        $user = $userRepository->find($userData['id']);
+        $user = $userRepository->find($userId);
 
         if (!$user) {
             return $this->json(['message' => 'Utilisateur introuvable'], 404);
@@ -64,10 +61,10 @@ class WalletController extends AbstractController
             }
 
             $cryptoMap[$cryptoId]['purchases'][] = [
-                'id'               => $transaction->getId(),
-                'date'             => $transaction->getCreatedAt()->format('Y-m-d'),
-                'quantity'         => (float) $transaction->getQuantity(),
-                'priceAtPurchase'  => (float) $transaction->getUnitPriceEur(),
+                'id'              => $transaction->getId(),
+                'date'            => $transaction->getCreatedAt()->format('Y-m-d'),
+                'quantity'        => (float) $transaction->getQuantity(),
+                'priceAtPurchase' => (float) $transaction->getUnitPriceEur(),
             ];
         }
 
