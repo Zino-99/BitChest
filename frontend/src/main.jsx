@@ -15,32 +15,10 @@ import UserManagement from './pages/admin/UserManagement.jsx'
 import Data from './pages/Data.jsx'
 import Buy from './pages/user/Buy.jsx'
 import Sell from './pages/user/Sell.jsx'
+import AdminMarket from './pages/admin/AdminMarket.jsx'
 
-if (import.meta.env.DEV) {
-    sessionStorage.setItem(
-        'admin',
-        JSON.stringify({
-            id: 1,
-            firstname: 'John',
-            lastname: 'Smith',
-            email: 'john@test.com',
-            role: 'admin',
-        })
-    )
-}
 
-// if (import.meta.env.DEV) {
-//     sessionStorage.setItem(
-//         'admin',
-//         JSON.stringify({
-//             id: 1,
-//             firstname: 'Admin',
-//             lastname: 'Admin',
-//             email: 'admin@gmail.com',
-//             role: 'admin',
-//         })
-//     )
-// }
+
 function PrivateRoute({ children }) {
     const user = sessionStorage.getItem('user')
     return user ? children : <Navigate to="/Login" />
@@ -58,13 +36,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/Dashboard" element={<Dashboard />} />
 
             {/* User */}
-            <Route
-                element={
-                    <PrivateRoute>
-                        <UserLayout />
-                    </PrivateRoute>
-                }
-            >
+            <Route element={<PrivateRoute><UserLayout /></PrivateRoute>}>
                 <Route path="/user/Wallet" element={<Wallet />} />
                 <Route path="/user/Market" element={<Market />} />
                 <Route path="/user/Data" element={<Data />} />
@@ -73,19 +45,11 @@ createRoot(document.getElementById('root')).render(
             </Route>
 
             {/* Admin */}
-            <Route
-                element={
-                    <PrivateRoute>
-                        <AdminLayout />
-                    </PrivateRoute>
-                }
-            >
-                <Route path="/admin/Market" element={<Market />} />
-                <Route
-                    path="/admin/UserManagement"
-                    element={<UserManagement />}
-                />
+            <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
+                <Route path="/admin/Market" element={<AdminMarket />} />
+                <Route path="/admin/UserManagement"element={<UserManagement />}/>
                 <Route path="/admin/Profile" element={<Data />} />
+                
             </Route>
 
             {/* Fallback */}
