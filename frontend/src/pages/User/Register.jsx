@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+    const navigate = useNavigate();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +30,7 @@ export default function Register() {
         setLastname("");
         setEmail("");
         setPassword("");
+        setTimeout(() => navigate("../Login"), 1500);
       } else {
         setMessage({ type: "error", text: data.message || "Erreur lors de l'inscription" });
       }

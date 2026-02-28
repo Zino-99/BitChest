@@ -13,6 +13,8 @@ import AdminLayout from './components/admin/AdminLayout.jsx'
 import UserManagement from './pages/admin/UserManagement.jsx'
 
 import Data from './pages/Data.jsx'
+import Buy from './pages/user/Buy.jsx'
+import Sell from './pages/user/Sell.jsx'
 
 if (import.meta.env.DEV) {
     sessionStorage.setItem(
@@ -66,6 +68,8 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/user/Wallet" element={<Wallet />} />
                 <Route path="/user/Market" element={<Market />} />
                 <Route path="/user/Data" element={<Data />} />
+                <Route path="/user/buy/:id" element={<Buy />} />
+                <Route path="/user/sell/:id" element={<Sell />} />
             </Route>
 
             {/* Admin */}
