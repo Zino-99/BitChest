@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, ShoppingCart } from "lucide-react";
+import { TrendingUp, TrendingDown, ShoppingCart, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -21,12 +21,13 @@ function fmt(n, decimals = 2) {
 }
 
 export default function Market() {
-  const [cryptos, setCryptos]       = useState([]);
-  const [selected, setSelected]     = useState(null);
-  const [history, setHistory]       = useState([]);
+  const [cryptos, setCryptos]           = useState([]);
+  const [selected, setSelected]         = useState(null);
+  const [history, setHistory]           = useState([]);
   const [loadingChart, setLoadingChart] = useState(false);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState(null);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState(null);
+  const [showChart, setShowChart]       = useState(false); // mobile: show chart panel
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +40,6 @@ export default function Market() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Charge l'historique quand on sélectionne une crypto
   useEffect(() => {
     if (!selected) return;
     setLoadingChart(true);
@@ -50,183 +50,229 @@ export default function Market() {
       .finally(() => setLoadingChart(false));
   }, [selected]);
 
+  const handleSelect = (crypto) => {
+    setSelected(crypto);
+    setShowChart(true); // mobile: switch to chart view
+  };
+
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <p className="text-gray-400 animate-pulse">Loading market...</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-400 text-sm">Loading market...</p>
+      </div>
     </div>
   );
 
   if (error) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <p className="text-red-500">{error}</p>
     </div>
   );
 
-  const color = selected ? (CRYPTO_COLORS[selected.symbol] ?? "#43698f") : "#43698f";
+  const color    = selected ? (CRYPTO_COLORS[selected.symbol] ?? "#43698f") : "#43698f";
   const positive = selected ? selected.change >= 0 : true;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Market <span className="text-blue-500">📈</span></h1>
-        <p className="text-gray-400 text-sm mt-1">Select a cryptocurrency to view its chart</p>
+      <div className="mb-5">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          Market <span className="text-blue-500">📈</span>
+        </h1>
+        <p className="text-gray-400 text-sm mt-1 hidden md:block">
+          Select a cryptocurrency to view its chart
+        </p>
       </div>
 
-      <div className="flex gap-6 h-[calc(100vh-160px)]">
+      {/* ── DESKTOP: side by side ── */}
+      <div className="hidden md:flex gap-6 h-[calc(100vh-160px)]">
 
-        {/* ── Left: crypto list ── */}
+        {/* Left: list */}
         <div className="w-80 flex-shrink-0 flex flex-col gap-2 overflow-y-auto pr-1">
-          {cryptos.map((crypto) => {
-            const col = CRYPTO_COLORS[crypto.symbol] ?? "#43698f";
-            const pos = crypto.change >= 0;
-            const isSelected = selected?.id === crypto.id;
-
-            return (
-              <button
-                key={crypto.id}
-                onClick={() => setSelected(crypto)}
-                className={`w-full text-left rounded-2xl px-4 py-3 transition-all border-2 ${
-                  isSelected
-                    ? "bg-white border-blue-400 shadow-md"
-                    : "bg-white border-transparent hover:border-gray-200 shadow-sm"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
-                      style={{ backgroundColor: col }}
-                    >
-                      {crypto.symbol.slice(0, 2)}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800 text-sm">{crypto.name}</p>
-                      <p className="text-xs text-gray-400">{crypto.symbol}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-gray-800 text-sm">{fmt(crypto.currentPrice)} €</p>
-                    <p className={`text-xs font-semibold flex items-center justify-end gap-1 ${
-                      pos ? "text-green-500" : "text-red-500"
-                    }`}>
-                      {pos ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                      {pos ? "+" : ""}{fmt(crypto.change, 2)}%
-                    </p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+          {cryptos.map((crypto) => (
+            <CryptoListItem
+              key={crypto.id}
+              crypto={crypto}
+              isSelected={selected?.id === crypto.id}
+              onClick={() => handleSelect(crypto)}
+            />
+          ))}
         </div>
 
-        {/* ── Right: chart panel ── */}
+        {/* Right: chart */}
         {selected && (
-          <div className="flex-1 bg-white rounded-2xl shadow-md p-6 flex flex-col">
+          <ChartPanel
+            selected={selected}
+            history={history}
+            loadingChart={loadingChart}
+            color={color}
+            positive={positive}
+            navigate={navigate}
+          />
+        )}
+      </div>
 
-            {/* Crypto header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow"
-                  style={{ backgroundColor: color }}
-                >
-                  {selected.symbol.slice(0, 2)}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
-                  <p className="text-gray-400 text-sm">{selected.symbol}</p>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => navigate(`/user/buy/${selected.id}`)}
-                  className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-2 rounded-full transition"
-                >
-                  <ShoppingCart size={16} />
-                  Buy
-                </button>
-                <button
-                  onClick={() => navigate(`/user/sell/${selected.id}`)}
-                  className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded-full transition"
-                >
-                  <TrendingDown size={16} />
-                  Sell
-                </button>
-              </div>
-            </div>
-
-            {/* Price + change */}
-            <div className="flex items-end gap-4 mb-6">
-              <p className="text-4xl font-bold text-gray-800">{fmt(selected.currentPrice)} €</p>
-              <p className={`text-lg font-semibold flex items-center gap-1 mb-1 ${
-                positive ? "text-green-500" : "text-red-500"
-              }`}>
-                {positive ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
-                {positive ? "+" : ""}{fmt(selected.change, 2)}%
-              </p>
-            </div>
-
-            {/* Chart */}
-            <div className="flex-1">
-              {loadingChart ? (
-                <div className="h-full flex items-center justify-center">
-                  <p className="text-gray-400 animate-pulse">Loading chart...</p>
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={history}>
-                    <defs>
-                      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor={color} stopOpacity={0.25} />
-                        <stop offset="95%" stopColor={color} stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 11, fill: "#9ca3af" }}
-                      interval={4}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 11, fill: "#9ca3af" }}
-                      domain={["auto", "auto"]}
-                      tickFormatter={(v) => `${fmt(v)} €`}
-                      width={75}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip
-                      formatter={(value) => [`${fmt(value)} €`, "Price"]}
-                      contentStyle={{
-                        borderRadius: "12px",
-                        border: "none",
-                        boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                        fontSize: "13px",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="price"
-                      stroke={color}
-                      strokeWidth={2.5}
-                      fill="url(#chartGrad)"
-                      dot={false}
-                      activeDot={{ r: 5, fill: color }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-
-            <p className="text-xs text-gray-300 text-right mt-2">Price evolution — last 30 days</p>
+      {/* ── MOBILE: toggle between list and chart ── */}
+      <div className="md:hidden">
+        {!showChart ? (
+          /* List view */
+          <div className="flex flex-col gap-2">
+            {cryptos.map((crypto) => (
+              <CryptoListItem
+                key={crypto.id}
+                crypto={crypto}
+                isSelected={selected?.id === crypto.id}
+                onClick={() => handleSelect(crypto)}
+              />
+            ))}
+          </div>
+        ) : (
+          /* Chart view */
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => setShowChart(false)}
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition w-fit"
+            >
+              <ChevronLeft size={18} />
+              <span className="text-sm">Back to list</span>
+            </button>
+            {selected && (
+              <ChartPanel
+                selected={selected}
+                history={history}
+                loadingChart={loadingChart}
+                color={color}
+                positive={positive}
+                navigate={navigate}
+                mobile
+              />
+            )}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Shared components ─────────────────────────────────────────────────────────
+
+function CryptoListItem({ crypto, isSelected, onClick }) {
+  const col = CRYPTO_COLORS[crypto.symbol] ?? "#43698f";
+  const pos = crypto.change >= 0;
+
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full text-left rounded-2xl px-4 py-3 transition-all ring-1 ${
+        isSelected
+          ? "bg-white ring-blue-300 shadow-md"
+          : "bg-white ring-gray-100 hover:ring-gray-200 shadow-sm"
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm flex-shrink-0"
+            style={{ background: `linear-gradient(135deg, ${col}dd, ${col}88)` }}
+          >
+            {crypto.symbol.slice(0, 2)}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 text-sm">{crypto.name}</p>
+            <p className="text-xs text-gray-400">{crypto.symbol}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="font-bold text-gray-800 text-sm">{fmt(crypto.currentPrice)} €</p>
+          <p className={`text-xs font-semibold flex items-center justify-end gap-1 ${
+            pos ? "text-emerald-500" : "text-red-500"
+          }`}>
+            {pos ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+            {pos ? "+" : ""}{fmt(crypto.change, 2)}%
+          </p>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function ChartPanel({ selected, history, loadingChart, color, positive, navigate, mobile }) {
+  return (
+    <div className={`bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 p-5 flex flex-col ${
+      mobile ? "min-h-[500px]" : "flex-1"
+    }`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <div
+            className="w-11 h-11 rounded-2xl flex items-center justify-center text-white font-bold shadow"
+            style={{ background: `linear-gradient(135deg, ${color}dd, ${color}88)` }}
+          >
+            {selected.symbol.slice(0, 2)}
+          </div>
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800">{selected.name}</h2>
+            <p className="text-gray-400 text-xs">{selected.symbol}</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate(`/user/buy/${selected.id}`)}
+            className="flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-full text-sm transition"
+          >
+            <ShoppingCart size={14} />
+            Buy
+          </button>
+          <button
+            onClick={() => navigate(`/user/sell/${selected.id}`)}
+            className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-full text-sm transition"
+          >
+            <TrendingDown size={14} />
+            Sell
+          </button>
+        </div>
+      </div>
+
+      {/* Price */}
+      <div className="flex items-end gap-3 mb-5">
+        <p className="text-3xl md:text-4xl font-bold text-gray-800">{fmt(selected.currentPrice)} €</p>
+        <p className={`text-base font-semibold flex items-center gap-1 mb-1 ${
+          positive ? "text-emerald-500" : "text-red-500"
+        }`}>
+          {positive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+          {positive ? "+" : ""}{fmt(selected.change, 2)}%
+        </p>
+      </div>
+
+      {/* Chart */}
+      <div style={{ height: "300px" }}>
+        {loadingChart ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-blue-300 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={history}>
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%"  stopColor={color} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} interval={4} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} domain={["auto", "auto"]} tickFormatter={(v) => `${fmt(v)} €`} width={70} axisLine={false} tickLine={false} />
+              <Tooltip
+                formatter={(value) => [`${fmt(value)} €`, "Price"]}
+                contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 8px 30px rgba(0,0,0,0.1)", fontSize: "12px" }}
+              />
+              <Area type="monotone" dataKey="price" stroke={color} strokeWidth={2.5} fill="url(#chartGrad)" dot={false} activeDot={{ r: 5, fill: color }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+      <p className="text-xs text-gray-300 text-right mt-2">Price evolution — last 30 days</p>
     </div>
   );
 }
