@@ -6,7 +6,7 @@ import BitchestLogo from '../../assets/bitchest_logo.png'
 const navItems = [
   { label: "My Wallet", icon: Wallet, path: "/user/Wallet" },
   { label: "Market", icon: TrendingUp, path: "/user/Market" },
-  { label: "Data", icon: BarChart2, path: "/user/Data" },
+  { label: "Profile", icon: BarChart2, path: "/user/Data" },
 ]
 
 export default function UserLayout() {
