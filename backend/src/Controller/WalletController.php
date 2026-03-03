@@ -34,7 +34,7 @@ class WalletController extends AbstractController
             return $this->json(['message' => 'Portefeuille introuvable'], 404);
         }
 
-        // Grouper les transactions par crypto (uniquement les achats "buy")
+       // Group transactions by crypto (only "buy" purchases)
         $cryptoMap = [];
 
         foreach ($wallet->getTransactions() as $transaction) {
@@ -46,7 +46,7 @@ class WalletController extends AbstractController
             $cryptoId = $crypto->getId();
 
             if (!isset($cryptoMap[$cryptoId])) {
-                // Récupérer le dernier cours (Quote) de cette crypto
+                // Retrieve the latest price (Quote) of this crypto
                 $quotes = $crypto->getQuotes()->toArray();
                 usort($quotes, fn($a, $b) => $b->getQuotedAt() <=> $a->getQuotedAt());
                 $latestPrice = !empty($quotes) ? (float) $quotes[0]->getPrice() : 0;

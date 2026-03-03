@@ -37,7 +37,7 @@ class AuthController extends AbstractController
         $user->setEmail($data['email']);
         $user->setPassword($hasher->hashPassword($user, $data['password']));
 
-        // Création du wallet automatiquement à l'inscription
+        // Wallet created automatically upon registration
         $wallet = new Wallet($user);
         $user->setWallet($wallet);
 
@@ -58,7 +58,7 @@ class AuthController extends AbstractController
         ], 201);
     }
 
-    // POST /api/login — Connexion
+  // POST /api/login — Login
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(
         Request $request,

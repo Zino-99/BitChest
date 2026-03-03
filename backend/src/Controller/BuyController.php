@@ -49,7 +49,7 @@ class BuyController extends AbstractController
             return $this->json(['message' => 'Cryptocurrency not found'], 404);
         }
 
-        // Récupère le cours actuel (dernier quote)
+        // Retrieves the current price (last quote)
         $quotes = $crypto->getQuotes()->toArray();
         usort($quotes, fn($a, $b) => $b->getQuotedAt() <=> $a->getQuotedAt());
 
@@ -60,7 +60,7 @@ class BuyController extends AbstractController
         $currentPrice = (float) $quotes[0]->getPrice();
         $totalCost    = $currentPrice * $quantity;
 
-        // Vérifie le solde
+     // Check the balance
         if ((float) $wallet->getEuroBalance() < $totalCost) {
             return $this->json([
                 'message' => 'Insufficient balance',
@@ -69,11 +69,11 @@ class BuyController extends AbstractController
             ], 400);
         }
 
-        // Débite le solde
+        // Debit the balance
         $newBalance = (float) $wallet->getEuroBalance() - $totalCost;
         $wallet->setEuroBalance((string) round($newBalance, 2));
 
-        // Crée la transaction
+        // Creates the transaction
         $transaction = new Transaction();
         $transaction->setWallet($wallet);
         $transaction->setCryptocurrency($crypto);

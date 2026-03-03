@@ -51,7 +51,7 @@ class MarketController extends AbstractController
         $quotes = $crypto->getQuotes()->toArray();
         usort($quotes, fn($a, $b) => $a->getQuotedAt() <=> $b->getQuotedAt());
 
-        // Derniers 30 jours
+        // Last 30 days
         $quotes = array_slice($quotes, -30);
 
         $history = array_map(fn($q) => [

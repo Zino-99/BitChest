@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    // GET /api/users — Liste tous les utilisateurs
+    // GET /api/users — Lists all users
     #[Route('/api/users', name: 'api_users_list', methods: ['GET'])]
     public function list(EntityManagerInterface $em): JsonResponse
     {
@@ -28,7 +28,7 @@ class UserController extends AbstractController
         ], $users));
     }
 
-    // PUT /api/users/{id} — Modifier un utilisateur
+    // PUT /api/users/{id} — Edit a user
     #[Route('/api/users/{id}', name: 'api_users_update', methods: ['PUT'])]
     public function update(
         int $id,
@@ -65,7 +65,7 @@ class UserController extends AbstractController
         ], 200);
     }
 
-    // DELETE /api/users/{id} — Supprimer un utilisateur
+    // DELETE /api/users/{id} — Delete a user
     #[Route('/api/users/{id}', name: 'api_users_delete', methods: ['DELETE'])]
     public function delete(int $id, EntityManagerInterface $em): JsonResponse
     {

@@ -49,7 +49,7 @@ class SellController extends AbstractController
             return $this->json(['message' => 'Cryptocurrency not found'], 404);
         }
 
-        // Calcule la quantité possédée (achats - ventes)
+        // Calculates the quantity owned (purchases - sales)
         $owned = 0;
         foreach ($wallet->getTransactions() as $transaction) {
             if ($transaction->getCryptocurrency()->getId() !== $crypto->getId()) continue;
@@ -67,7 +67,7 @@ class SellController extends AbstractController
             ], 400);
         }
 
-        // Récupère le cours actuel
+        // Retrieves the current price
         $quotes = $crypto->getQuotes()->toArray();
         usort($quotes, fn($a, $b) => $b->getQuotedAt() <=> $a->getQuotedAt());
 
@@ -78,11 +78,11 @@ class SellController extends AbstractController
         $currentPrice  = (float) $quotes[0]->getPrice();
         $totalReceived = $currentPrice * $quantity;
 
-        // Crédite le solde EUR
+       // Credit the EUR balance
         $newBalance = (float) $wallet->getEuroBalance() + $totalReceived;
         $wallet->setEuroBalance((string) round($newBalance, 2));
 
-        // Crée la transaction sell
+        // Creates the sell transaction
         $transaction = new Transaction();
         $transaction->setWallet($wallet);
         $transaction->setCryptocurrency($crypto);
